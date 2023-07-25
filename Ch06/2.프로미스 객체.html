@@ -1,0 +1,82 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>2.프로미스 객체</title>
+    <!--
+        날짜 : 2023/07/25
+        이름 : 정채윤
+        내용 : Javascript 프로미스 객체 실습하기 
+    -->
+</head>
+<body>
+    <h3>2. 프로미스 객체</h3>
+    <script>
+        //Promise 기본 
+        let result = false;
+        const promise1 = new Promise((resolve, reject)=>{
+            if(result){
+                resolve('promise1 fullfilled....');
+            }else {
+                reject('promise1 reject...');
+            }
+        });///생성자의 인자가 함수: 이를 비동기방식으로 처리할... 
+
+        promise1
+            .then((msg)=>{
+                console.log(msg); ///resolve 
+            })
+            .catch((msg)=>{
+                console.log(msg);
+            })
+            .finally(()=>{
+                console.log('promise1 end');
+            });
+
+        // Promise를 이용한 비동기 방식 처리 
+        async function step1(){
+            return new Promise((resolve, reject)=>{
+                setTimeout(()=>{
+                    resolve('step1...');
+                },1000);
+            });
+        }
+       async function step2(msg){
+            console.log(msg);
+            return new Promise((resolve, reject)=>{
+                setTimeout(()=>{
+                    resolve('step2...');
+                },3000);
+            });
+        }
+        async function step3(msg){
+            console.log(msg);
+            return new Promise((resolve, reject)=>{
+                setTimeout(()=>{
+                    resolve('step3...');
+                },2000);
+            });
+        }
+        step1() ///promise객체 리턴, 성공이니까 then 
+            .then((msg)=>step2(msg))//step2성공 
+            .then((msg)=>step3(msg))//step3성공
+            .then((msg)=>{
+                console.log(msg);
+            });
+
+        //async/await 구문을 활용한 비동기 처리 
+        async function start(){
+            const result1 = await step1();
+            const result2 = await step2(result1);
+            const result3 = await step3(result2);
+            console.log(result3);
+        }
+        setTimeout(()=>{
+            start();
+        },7000);
+        
+    </script>            
+</body>
+</html>

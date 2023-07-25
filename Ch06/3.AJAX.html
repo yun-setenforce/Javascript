@@ -1,0 +1,91 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>3.AJAX</title>
+    <!--
+        날짜 : 2023/07/25
+        이름 : 정채윤 
+        내용 : Javscript AJAX 실습하기 
+
+    -->
+    <script>
+        window.onload=function(){
+            const btnData = document.getElementById('btnData');
+            btnData.addEventListener('click',()=>{
+                //AJAX 데이터 요청
+                const xhr = new XMLHttpRequest();
+                xhr.open('GET', 'http://chhak.click/data/user.json');
+               // xhr.responseType='json';
+                xhr.send(); ///요청보냄 
+
+                // 응답 처리 핸들러
+                xhr.onreadystatechange = function(){ ///on >> dㅣ벤트 
+                    if(xhr.readyState == XMLHttpRequest.DONE ){
+                        if(xhr.status == 200){ ///200dㅣ 처리 성공 
+                            const data = JSON.parse(xhr.response);
+                            const span = document.getElementsByTagName('span');
+                            span[0].innerText= data.uid;
+                            span[1].innerText= data.name;
+                            span[2].innerText= data.hp;
+                            span[3].innerText= data.age;
+                        }else{
+                            console.log('요청 실패...')
+                        }
+                    }
+
+                }// onreadystatechange end
+            });//addEventListener end
+
+            document.getElementById('btnUsers').onclick = function(e){
+                e.preventDefault();
+
+                //AJAX 데이터 요청 
+                fetch('http://chhak.click/data/users.json') ///promise리턴 
+                    .then((response)=>response.json()) //또 promise를 리턴 
+                    .then((data)=>{
+                        console.log(data);
+                        const userTable = document.querySelector    ('table');
+                        for(let user of data.users){
+                            const userTR = document.createElement('tr');
+                            console.log(user);
+                            for(let key in user){
+                                const userTD = document.createElement('td');
+                                userTD.innerText = user[key];
+                                userTR.appendChild(userTD);
+                            }
+                            userTable.appendChild(userTR);
+                        }
+                    });
+
+            };//btnUsers.onclick
+
+
+        } //window.onload end
+    </script>
+</head>
+<body>
+    <h3>3.AJAX</h3>
+
+    <button id="btnData">user 데이터 요청</button>
+
+    <p>
+        야이디 : <span></span><br>
+        이름 : <span></span><br>
+        휴대폰 : <span></span><br>
+        나이 : <span></span><br>
+    </p>
+
+    <a href="#" id="btnUsers">users데이터 요청</a>
+    <table border="1">
+        <tr>
+            <th>아이디</th>
+            <th>이름</th>
+            <th>휴대폰</th>
+            <th>나이</th>
+        </tr>
+    </table>
+</body>
+</html>
